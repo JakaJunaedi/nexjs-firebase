@@ -1,8 +1,11 @@
 "use client";
 
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export default function Sidebar() {
   const menuList = [
@@ -12,7 +15,7 @@ export default function Sidebar() {
       icon: <LayoutDashboard className="h-4 w-4" />,
     },
     {
-      name: "Categorie",
+      name: "Category",
       link: "/admin/categories",
       icon: <LayoutDashboard className="h-4 w-4" />,
     },
@@ -37,20 +40,24 @@ export default function Sidebar() {
       icon: <LayoutDashboard className="h-4 w-4" />,
     },
     {
-      name: "Users",
-      link: "/admin/collectios",
-      icon: <LayoutDashboard className="h-4 w-4" />,
-    },
-    {
       name: "Sales",
       link: "/admin/collectios",
       icon: <LayoutDashboard className="h-4 w-4" />,
     },
-    
+    {
+      name: "Collections",
+      link: "/admin/collectios",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      name: "Manage Admin",
+      link: "/admin/admins",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
   ];
 
   return (
-    <section className="flex flex-col gap-10 justify-between bg-white border-r px-5 py-3 h-screen overflow-hidden md:w-[260px]">
+    <section className="flex flex-col gap-10 justify-between bg-white border-r px-5 py-3 h-screen overflow-hidden w-[260px]">
       <div className="flex justify-center">
         <img src="/logo.png" alt="" className="h-8" />
       </div>
@@ -60,7 +67,20 @@ export default function Sidebar() {
         })}
       </ul>
       <div className="flex justify-center w-full mb-5">
-        <button className="flex gap-2 items-center px-3 py-3 hover:bg-indigo-100 rounded-xl w-full font-semibold ease-soft-spring duration-300">
+        <button
+          onClick={async () => {
+            try {
+              await toast.promise(signOut(auth), {
+                error: (e) => e?.message,
+                loading: "Loading",
+                success: "Successfully Log Out",
+              });
+            } catch (error) {
+              toast.error(error?.message);
+            }
+          }}
+          className="flex gap-2 items-center px-3 py-3 hover:bg-indigo-100 rounded-xl w-full font-semibold ease-soft-spring duration-300"
+        >
           <LogOut className="h-4 w-4" />
           Logout
         </button>
